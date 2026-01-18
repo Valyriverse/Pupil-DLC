@@ -1,7 +1,8 @@
 # Pupil-DLC
 
-![](giffs/pupil_tracking_ellipse.gif)
-
+<p align="center">
+  <img src="giffs/pupil_tracking_ellipse.gif" />
+</p>
 
 
 
