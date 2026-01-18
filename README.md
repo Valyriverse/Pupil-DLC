@@ -3,7 +3,7 @@
 
 | Raw video | GM ellipse overlay |
 |-----------|------------------|
-| ![](giffs\pupil_tracking.gif) | ![](giffs\pupil_tracking_ellipse.gif) |
+| ![](giffs/pupil_tracking.gif) | ![](giffs/pupil_tracking_ellipse.gif) |
 
 
 
