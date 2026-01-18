@@ -6,7 +6,7 @@ multianimalproject: false
 identity:
 
     # Project path (change when moving around)
-project_path: D:/Allen/Pupil_Tracking_Project/DLC_projects/General_model/Projects/GM_github
+project_path: c:\users\valyria\desktop\pupil-dlc\GM_gitub
 
     # Annotation data set configuration (and individual video cropping parameters)
 video_sets:
@@ -211,6 +211,14 @@ bodyparts:
 - Eye2
 - Eye3
 - Eye4
+
+    # Fraction of video to start/stop when extracting frames for labeling/refinement
+
+    # Fraction of video to start/stop when extracting frames for labeling/refinement
+
+    # Fraction of video to start/stop when extracting frames for labeling/refinement
+
+    # Fraction of video to start/stop when extracting frames for labeling/refinement
 
     # Fraction of video to start/stop when extracting frames for labeling/refinement
 start: 0
