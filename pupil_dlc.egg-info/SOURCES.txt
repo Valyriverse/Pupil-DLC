@@ -1,0 +1,15 @@
+README.md
+setup.py
+pupil_dlc/__init__.py
+pupil_dlc/convert_dlc_onnx.py
+pupil_dlc/ellipse.py
+pupil_dlc/fast_analyze.py
+pupil_dlc/pupil_dlc.py
+pupil_dlc/smoothing_module.py
+pupil_dlc/yaml_section.py
+pupil_dlc.egg-info/PKG-INFO
+pupil_dlc.egg-info/SOURCES.txt
+pupil_dlc.egg-info/dependency_links.txt
+pupil_dlc.egg-info/entry_points.txt
+pupil_dlc.egg-info/requires.txt
+pupil_dlc.egg-info/top_level.txt

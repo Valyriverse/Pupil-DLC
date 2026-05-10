@@ -9,6 +9,8 @@
 
 **Pupil-DLC** is a command-line tool built around [DeepLabCut](https://www.deeplabcut.org/) for pupil tracking and ellipse fitting. It supports both Individual Model (IM) and General Model (GM) workflows, includes automated video analysis, and computes eye diameter from tracked points.
 
+
+Compiled video data is publicly [available](https://doi.org/10.6084/m9.figshare.31282714)
 ---
 
 ## 🚀 Features
@@ -93,3 +95,11 @@ Python 3.8
 DeepLabCut 2.2.3
 
 TensorFlow <2.11
+
+### Citations
+If you use our corresponding pupil data (cite paper 1), or our tool please cite the following:
+```
+1. Seyfourian, P., Marks, L.C., Claar, L.D., Nahas, Y., Keating, M., Koch, C. and Rembado, I., 2026. Pupil-DLC: an open-source deep learning pipeline for scalable, markerless tracking of pupil dynamics across conscious and unconscious states. bioRxiv, pp.2026-01.
+
+2. Mathis, A., Mamidanna, P., Cury, K.M., Abe, T., Murthy, V.N., Mathis, M.W. and Bethge, M., 2018. DeepLabCut: markerless pose estimation of user-defined body parts with deep learning. Nature neuroscience, 21(9), pp.1281-1289.
+```

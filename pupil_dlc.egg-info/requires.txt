@@ -1,0 +1,7 @@
+deeplabcut
+pandas
+numpy
+scikit-image
+click
+pyfiglet
+pyyaml

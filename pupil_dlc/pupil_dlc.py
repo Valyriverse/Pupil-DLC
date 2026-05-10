@@ -2,7 +2,54 @@
 
 #!/usr/bin/env python
 import os
+import shutil as _shutil
 os.environ["MPLBACKEND"] = "Agg"
+os.environ.setdefault("TF_GPU_THREAD_MODE", "gpu_private")
+# XLA_FLAGS splits on spaces, so "Program Files" breaks the path.
+# Copy libdevice once to a space-free location and point XLA there.
+# Searches installed CUDA versions automatically; override with PUPIL_XLA_CACHE env var.
+def _setup_xla_libdevice():
+    import glob as _glob
+
+    _candidates = []
+    _cuda_path = os.environ.get("CUDA_PATH", "")
+
+    # CUDA_PATH on Windows is often already versioned (e.g. C:\...\CUDA\v11.2).
+    # Check it directly first, then also glob the parent for all installed versions.
+    _seen_roots = set()
+    for _root in filter(None, [
+        _cuda_path,                                          # versioned direct path
+        os.path.dirname(_cuda_path) if _cuda_path else "",  # parent of versioned path
+        r"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA",  # fallback
+    ]):
+        if _root in _seen_roots:
+            continue
+        _seen_roots.add(_root)
+        _direct = os.path.join(_root, "nvvm", "libdevice", "libdevice.10.bc")
+        if os.path.exists(_direct):
+            _candidates.append(_direct)
+        _candidates.extend(sorted(
+            _glob.glob(os.path.join(_root, "v*", "nvvm", "libdevice", "libdevice.10.bc")),
+            reverse=True
+        ))
+
+    if not _candidates:
+        return  # no CUDA found; skip XLA setup
+
+    _ld_src = _candidates[0]
+    _xla_cache = os.environ.get("PUPIL_XLA_CACHE", os.path.join(os.path.expanduser("~"), ".xla_cuda"))
+    _ld_dir = os.path.join(_xla_cache, "nvvm", "libdevice")
+    _ld_dst = os.path.join(_ld_dir, "libdevice.10.bc")
+
+    if not os.path.exists(_ld_dst):
+        os.makedirs(_ld_dir, exist_ok=True)
+        _shutil.copy2(_ld_src, _ld_dst)
+    _xla_flag = f"--xla_gpu_cuda_data_dir={_xla_cache.replace(os.sep, '/')}"
+    existing = os.environ.get("XLA_FLAGS", "")
+    if "--xla_gpu_cuda_data_dir" not in existing:
+        os.environ["XLA_FLAGS"] = (existing + " " + _xla_flag).strip()
+
+_setup_xla_libdevice()
 #import matplotlib
 #matplotlib.use('Agg')
 import sys
@@ -18,19 +65,22 @@ import time
 from .smoothing_module import smooth_pupil_data, filter_by_rate_of_change
 from .ellipse import ellipse_fitting
 from .yaml_section import replace_yaml_section
+from .fast_analyze import patch_dlc_inference
 
-def analyze_and_ellipse(experiment, video_paths, config_path, plot_flag=False, 
+def analyze_and_ellipse(experiment, video_paths, config_path, plot_flag=False,
                        filter_flag=False, filter_params=None,
                        smooth_flag=False, smoothing_method='auto', smoothing_params=None,
-                       make_labeled_video=False):
+                       make_labeled_video=False, gputouse=None):
     """Common: analyze video, fit ellipse, optionally filter and smooth, save CSV."""
     if filter_params is None:
         filter_params = {}
     if smoothing_params is None:
         smoothing_params = {}
-        
+
     click.echo("→ running analysis…")
-    deeplabcut.analyze_videos(config_path, video_paths, save_as_csv=True)
+    patch_dlc_inference()
+    deeplabcut.analyze_videos(config_path, video_paths, save_as_csv=True,
+                              allow_growth=True, gputouse=gputouse, batchsize=64)
 
     if make_labeled_video:
         click.echo("→ creating annotated video…")
@@ -296,7 +346,13 @@ def main():
             show_default=False
         )
         click.echo(f"→ using config: {config_path}")
-        # (any GM-specific prep you already have…)
+
+        gpu_number = click.prompt(
+            "Which GPU to use? (0 = display GPU, 1 = non-display GPU — prefer 1 for speed)",
+            type=click.IntRange(min=0),
+            default=1,
+            show_default=True
+        )
 
     # both IM & GM converge here:
     if plot_flag:
@@ -311,7 +367,8 @@ def main():
         smooth_flag=smooth_flag,
         smoothing_method=smoothing_method,
         smoothing_params=smoothing_params,
-        make_labeled_video=make_labeled_video
+        make_labeled_video=make_labeled_video,
+        gputouse=gpu_number,
     )
 
 if __name__ == '__main__':

@@ -1,0 +1,10 @@
+Metadata-Version: 2.1
+Name: pupil_dlc
+Version: 0.1
+Requires-Dist: deeplabcut
+Requires-Dist: pandas
+Requires-Dist: numpy
+Requires-Dist: scikit-image
+Requires-Dist: click
+Requires-Dist: pyfiglet
+Requires-Dist: pyyaml

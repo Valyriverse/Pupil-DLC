@@ -1,0 +1,2 @@
+[console_scripts]
+pupil-dlc = pupil_dlc.pupil_dlc:main
