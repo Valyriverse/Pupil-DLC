@@ -336,7 +336,7 @@ def main():
 
         # resolve path to the default general model config.yaml inside your repo
         repo_root = os.path.normpath(os.path.join(os.path.dirname(__file__), '..'))
-        default_config_path = os.path.join(repo_root, 'GM_gitub', 'config.yaml')
+        default_config_path = os.path.join(repo_root, 'GM_Model', 'config.yaml')
         default_config_path = os.path.normpath(default_config_path)
 
         config_path = click.prompt(
@@ -346,6 +346,18 @@ def main():
             show_default=False
         )
         click.echo(f"→ using config: {config_path}")
+
+        # Patch project_path to the actual config location so the tool is portable
+        # across machines and folder renames (config.yaml stores an absolute path).
+        import yaml
+        with open(config_path, 'r') as _f:
+            _cfg = yaml.safe_load(_f)
+        _actual_project = os.path.normpath(os.path.dirname(config_path))
+        if os.path.normpath(_cfg.get('project_path', '')) != _actual_project:
+            _cfg['project_path'] = _actual_project
+            with open(config_path, 'w') as _f:
+                yaml.dump(_cfg, _f, default_flow_style=False, allow_unicode=True)
+            click.echo(f"→ updated project_path in config to: {_actual_project}")
 
         gpu_number = click.prompt(
             "Which GPU to use? (0 = display GPU, 1 = non-display GPU — prefer 1 for speed)",

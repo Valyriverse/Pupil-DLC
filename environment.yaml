@@ -1,4 +1,4 @@
-name: pupil-dlc-exp
+name: pupil-dlc
 channels:
   - conda-forge
   - defaults
