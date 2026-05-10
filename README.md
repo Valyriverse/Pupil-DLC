@@ -10,7 +10,11 @@
 **Pupil-DLC** is a command-line tool built around [DeepLabCut](https://www.deeplabcut.org/) for pupil tracking and ellipse fitting. It supports both Individual Model (IM) and General Model (GM) workflows, includes automated video analysis, and computes eye diameter from tracked points.
 
 
-Compiled video data is publicly [available](https://doi.org/10.6084/m9.figshare.31282714).
+Compiled annotated frames to train our model is publicly [available](https://doi.org/10.6084/m9.figshare.31282714).
+
+There is a video [Tutorial](https://youtu.be/G_frXJzCL6I) as well.
+
+If you encounter any problems or bugs, please reach out [here](https://github.com/Valyriverse/Pupil-DLC/issues).
 
 ---
 

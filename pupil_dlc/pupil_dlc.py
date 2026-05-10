@@ -60,12 +60,156 @@ import pandas as pd
 import deeplabcut
 import fnmatch
 import time
+from tqdm import tqdm
 
 ##### Pupil reinstallment should be in the main folder where the setup.py is and do pip install -e .
 from .smoothing_module import smooth_pupil_data, filter_by_rate_of_change
 from .ellipse import ellipse_fitting
 from .yaml_section import replace_yaml_section
 from .fast_analyze import patch_dlc_inference
+
+_FIGSHARE_URL = "https://ndownloader.figshare.com/files/61704058"
+_TAR_NAME = "Manual_annotations.tar"
+_GLOBAL_GM_CACHE = os.path.join(os.path.expanduser("~"), ".pupil_dlc_cache", "gm_labeled_data")
+_GM_SCORER = "Parsa"  # scorer name embedded in the Figshare dataset
+
+
+def _patch_config_project_path(config_path):
+    """Rewrite project_path in config.yaml to match config file's actual location."""
+    import yaml
+    with open(config_path, 'r') as f:
+        cfg = yaml.safe_load(f)
+    actual = os.path.normpath(os.path.dirname(config_path))
+    if os.path.normpath(cfg.get('project_path', '')) != actual:
+        cfg['project_path'] = actual
+        with open(config_path, 'w') as f:
+            yaml.dump(cfg, f, default_flow_style=False, allow_unicode=True)
+        click.echo(f"→ updated project_path in config to: {actual}")
+    return actual
+
+
+def _ensure_gm_cache():
+    """Download and extract GM labeled data to a global cache — runs once ever."""
+    import tarfile
+    import requests
+
+    cache_marker = os.path.join(_GLOBAL_GM_CACHE, ".gm_data_ok")
+    if os.path.exists(cache_marker):
+        return  # already cached globally
+
+    os.makedirs(_GLOBAL_GM_CACHE, exist_ok=True)
+    tar_path = os.path.join(os.path.dirname(_GLOBAL_GM_CACHE), _TAR_NAME)
+
+    click.secho(
+        "→ downloading GM labeled data (~6.3 GB) from Figshare — one-time download, "
+        f"cached at {_GLOBAL_GM_CACHE}…", fg="yellow"
+    )
+    resp = requests.get(_FIGSHARE_URL, stream=True)
+    resp.raise_for_status()
+    total = int(resp.headers.get('content-length', 0))
+    with open(tar_path, 'wb') as f, tqdm(
+        total=total, unit='B', unit_scale=True, desc=_TAR_NAME
+    ) as pbar:
+        for chunk in resp.iter_content(chunk_size=1024 * 1024):
+            f.write(chunk)
+            pbar.update(len(chunk))
+    click.echo("→ download complete.")
+
+    click.echo(f"→ extracting to global cache…")
+    with tarfile.open(tar_path) as tf:
+        for member in tqdm(tf.getmembers(), desc="extracting"):
+            if '/' not in member.name:
+                continue
+            member.name = member.name.split('/', 1)[1]
+            if not member.name:
+                continue
+            tf.extract(member, path=_GLOBAL_GM_CACHE)
+
+    os.remove(tar_path)
+    open(cache_marker, 'w').close()
+    click.secho(f"→ GM data cached globally at {_GLOBAL_GM_CACHE}", fg="green")
+
+
+def _link_gm_data_to_project(project_dir, scorer):
+    """Hard-link GM images into the project (zero disk cost) and copy annotation
+    files with the scorer name updated to match the new project's scorer."""
+    labeled_data_dir = os.path.join(project_dir, "labeled-data")
+    marker = os.path.join(labeled_data_dir, ".gm_data_ok")
+    if os.path.exists(marker):
+        click.echo("→ GM labeled-data already linked to this project, skipping.")
+        return
+
+    session_dirs = [
+        d for d in os.listdir(_GLOBAL_GM_CACHE)
+        if os.path.isdir(os.path.join(_GLOBAL_GM_CACHE, d)) and not d.startswith('.')
+    ]
+    click.echo(f"→ linking {len(session_dirs)} GM sessions into project (scorer → {scorer})…")
+
+    for session in tqdm(session_dirs, desc="linking"):
+        src_session = os.path.join(_GLOBAL_GM_CACHE, session)
+        dst_session = os.path.join(labeled_data_dir, session)
+        os.makedirs(dst_session, exist_ok=True)
+
+        for fname in os.listdir(src_session):
+            src_file = os.path.join(src_session, fname)
+            if os.path.isdir(src_file):
+                continue
+
+            if fname == f"CollectedData_{_GM_SCORER}.h5":
+                # Copy H5 with internal scorer MultiIndex level renamed
+                dst_file = os.path.join(dst_session, f"CollectedData_{scorer}.h5")
+                if not os.path.exists(dst_file):
+                    df = pd.read_hdf(src_file, 'df_with_missing')
+                    df = df.rename(columns={_GM_SCORER: scorer}, level='scorer')
+                    df.to_hdf(dst_file, key='df_with_missing', mode='w')
+
+            elif fname == f"CollectedData_{_GM_SCORER}.csv":
+                # Copy CSV with scorer header row updated
+                dst_file = os.path.join(dst_session, f"CollectedData_{scorer}.csv")
+                if not os.path.exists(dst_file):
+                    df = pd.read_csv(src_file, header=[0, 1, 2], index_col=0)
+                    df = df.rename(columns={_GM_SCORER: scorer}, level=0)
+                    df.to_csv(dst_file)
+
+            else:
+                # PNG images — hard-link (zero extra disk space, instant);
+                # fall back to copy if project is on a different drive than cache.
+                dst_file = os.path.join(dst_session, fname)
+                if not os.path.exists(dst_file):
+                    try:
+                        os.link(src_file, dst_file)
+                    except OSError:
+                        _shutil.copy2(src_file, dst_file)
+
+    open(marker, 'w').close()
+    click.secho(f"→ GM labeled-data ready in {labeled_data_dir}", fg="green")
+
+
+def _patch_dlc_labeling_toolbox():
+    """Fix DLC's saveEachImage chained-indexing bug that silently drops all labels."""
+    try:
+        from deeplabcut.gui.labeling_toolbox import MainFrame
+
+        def _saveEachImage_fixed(self):
+            for bp in self.updatedCoords:
+                self.dataFrame.loc[
+                    self.relativeimagenames[self.iter],
+                    (self.scorer, bp[0][-2], "x"),
+                ] = bp[-1][0]
+                self.dataFrame.loc[
+                    self.relativeimagenames[self.iter],
+                    (self.scorer, bp[0][-2], "y"),
+                ] = bp[-1][1]
+
+        MainFrame.saveEachImage = _saveEachImage_fixed
+    except Exception:
+        pass  # best-effort; if DLC layout changed, proceed unpatched
+
+
+def _download_labeled_data(project_dir, scorer):
+    """Ensure GM data is in the project, using a persistent global cache to avoid re-downloads."""
+    _ensure_gm_cache()
+    _link_gm_data_to_project(project_dir, scorer)
 
 def analyze_and_ellipse(experiment, video_paths, config_path, plot_flag=False,
                        filter_flag=False, filter_params=None,
@@ -207,8 +351,8 @@ def main():
 
     # choose path
     mode = click.prompt(
-        "Model? [IM=Individual, GM=General]", 
-        type=click.Choice(["IM","GM"]), default="Default: GM"
+        "Model? [IM=Individual, GM=General, RT=ReTraining]",
+        type=click.Choice(["IM", "GM", "RT"]), default="GM"
     )
     default_dir = os.getcwd()
     working_dir = click.prompt(f"Working Directory [default: {default_dir}]", 
@@ -294,14 +438,16 @@ def main():
     else:
         video_paths = [video_path]
 
+    repo_root = os.path.normpath(os.path.join(os.path.dirname(__file__), '..'))
+    default_config_path = os.path.normpath(os.path.join(repo_root, 'GM_Model', 'config.yaml'))
+
     if mode == "IM":
         gpu_number = click.prompt(
-        "Which GPU to use?",
-        type=click.IntRange(min=0),
-        default=0,
-        show_default=True
+            "Which GPU to use?",
+            type=click.IntRange(min=0),
+            default=0,
+            show_default=True
         )
-        # create a fresh project
         config_path = deeplabcut.create_new_project(
             experiment, "You", [video_path],
             working_directory=working_dir,
@@ -310,7 +456,6 @@ def main():
         click.echo(f"→ project created: {config_path}")
         replace_yaml_section(config_path)
 
-        # loop: label → ask to proceed
         while True:
             deeplabcut.extract_frames(config_path, mode="manual")
             deeplabcut.label_frames(config_path)
@@ -327,18 +472,7 @@ def main():
         )
         deeplabcut.evaluate_network(config_path, Shuffles=[1], plotting=True)
 
-    else:  # mode == "GM"
-        # user already has a config.yaml
-        #config_path = click.prompt(
-        #    "Full path to your existing config file",
-        #    type=click.Path(exists=True, dir_okay=False)
-        #)
-
-        # resolve path to the default general model config.yaml inside your repo
-        repo_root = os.path.normpath(os.path.join(os.path.dirname(__file__), '..'))
-        default_config_path = os.path.join(repo_root, 'GM_Model', 'config.yaml')
-        default_config_path = os.path.normpath(default_config_path)
-
+    elif mode == "GM":
         config_path = click.prompt(
             f"Full path to your config file [default: {default_config_path}]",
             default=default_config_path,
@@ -346,18 +480,7 @@ def main():
             show_default=False
         )
         click.echo(f"→ using config: {config_path}")
-
-        # Patch project_path to the actual config location so the tool is portable
-        # across machines and folder renames (config.yaml stores an absolute path).
-        import yaml
-        with open(config_path, 'r') as _f:
-            _cfg = yaml.safe_load(_f)
-        _actual_project = os.path.normpath(os.path.dirname(config_path))
-        if os.path.normpath(_cfg.get('project_path', '')) != _actual_project:
-            _cfg['project_path'] = _actual_project
-            with open(config_path, 'w') as _f:
-                yaml.dump(_cfg, _f, default_flow_style=False, allow_unicode=True)
-            click.echo(f"→ updated project_path in config to: {_actual_project}")
+        _patch_config_project_path(config_path)
 
         gpu_number = click.prompt(
             "Which GPU to use? (0 = display GPU, 1 = non-display GPU — prefer 1 for speed)",
@@ -366,9 +489,124 @@ def main():
             show_default=True
         )
 
-    # both IM & GM converge here:
+    else:  # mode == "RT"
+        gpu_number = click.prompt(
+            "Which GPU to use? (0 = display GPU, 1 = non-display GPU — prefer 1 for speed)",
+            type=click.IntRange(min=0),
+            default=1,
+            show_default=True
+        )
+
+        # Create a brand-new DLC project — GM_Model is never modified
+        config_path = deeplabcut.create_new_project(
+            experiment, "You", video_paths,
+            working_directory=working_dir,
+            copy_videos=False, multianimal=False
+        )
+        click.echo(f"→ RT project created: {config_path}")
+
+        # Apply GM bodyparts/skeleton to the new project config
+        replace_yaml_section(config_path)
+
+        project_dir = os.path.normpath(os.path.dirname(config_path))
+
+        # Read the scorer DLC assigned (derived from the experimenter name prompt)
+        import yaml as _yaml
+        with open(config_path, 'r') as _f:
+            _scorer = _yaml.safe_load(_f).get('scorer', 'You')
+
+        # Download GM data to global cache (once ever) then link into this project
+        _download_labeled_data(project_dir, _scorer)
+
+        # Extract frames from user's video for labeling
+        frame_mode = click.prompt(
+            "Frame extraction mode",
+            type=click.Choice(['automatic', 'manual']),
+            default='automatic'
+        )
+        click.secho("→ extracting frames from your video for labeling…", fg="yellow")
+        deeplabcut.extract_frames(config_path, mode=frame_mode,
+                                  algo='uniform', userfeedback=False)
+
+        click.secho(
+            "→ label the extracted frames in the GUI, then close it to continue.",
+            fg="yellow"
+        )
+        _patch_dlc_labeling_toolbox()
+        deeplabcut.label_frames(config_path)
+
+        if not click.confirm("Labeling complete? Proceed to retraining?", default=True):
+            click.echo("Aborted. Re-run RT mode when labeling is done.")
+            return
+
+        # Verify the user actually saved labels for their video before proceeding.
+        # DLC's labeling GUI has a known pandas chained-assignment issue that can
+        # silently prevent saves; catch this early with a clear message.
+        _user_label_dirs = [
+            os.path.join(project_dir, "labeled-data", os.path.splitext(os.path.basename(vp))[0])
+            for vp in video_paths
+        ]
+        _missing_labels = [
+            d for d in _user_label_dirs
+            if not os.path.exists(os.path.join(d, f"CollectedData_{_scorer}.h5"))
+        ]
+        if _missing_labels:
+            click.secho(
+                "\nWarning: no saved labels found for your video(s):\n"
+                + "\n".join(f"  {d}" for d in _missing_labels)
+                + "\n\nMake sure you clicked Save in the labeling GUI before closing it.",
+                fg="yellow"
+            )
+            if not click.confirm(
+                "Re-open the labeling GUI to save your labels?", default=True
+            ):
+                click.echo(
+                    "Proceeding without user labels — retraining will use GM data only."
+                )
+            else:
+                _patch_dlc_labeling_toolbox()
+                deeplabcut.label_frames(config_path)
+                if not click.confirm(
+                    "Labels saved? Proceed to retraining?", default=True
+                ):
+                    click.echo("Aborted. Re-run RT mode when labeling is done.")
+                    return
+
+        deeplabcut.check_labels(config_path)
+        deeplabcut.create_training_dataset(config_path, augmenter_type='imgaug')
+
+        # Verify the training dataset is non-empty before starting — an empty
+        # dataset causes DLC's data-loader thread to crash with ValueError and
+        # the main training loop hangs indefinitely.
+        import glob as _glob
+        _labeled_imgs = _glob.glob(
+            os.path.join(os.path.dirname(config_path), "labeled-data", "**", "img*.png"),
+            recursive=True
+        )
+        if not _labeled_imgs:
+            raise click.ClickException(
+                "No labeled images found in labeled-data/. "
+                "Make sure you saved your labels in the GUI and that the GM data downloaded correctly."
+            )
+
+        max_iters = click.prompt(
+            "Max training iterations",
+            type=int, default=200000
+        )
+        deeplabcut.train_network(
+            config_path, shuffle=1, trainingsetindex=0,
+            gputouse=gpu_number, max_snapshots_to_keep=5,
+            autotune=False, displayiters=100,
+            saveiters=15000, maxiters=max_iters, allow_growth=True
+        )
+        deeplabcut.evaluate_network(config_path, Shuffles=[1], plotting=True)
+
+        if not click.confirm("Run inference on your video with the retrained model?", default=True):
+            return
+
+    # IM, GM, and RT (if inference confirmed) all converge here
     if plot_flag:
-        import matplotlib.pyplot as plt  # add at top of file
+        import matplotlib.pyplot as plt
     analyze_and_ellipse(
         experiment=experiment,
         video_paths=video_paths,

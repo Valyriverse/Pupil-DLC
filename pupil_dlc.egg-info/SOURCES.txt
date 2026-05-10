@@ -1,3 +1,4 @@
+LICENSE
 README.md
 setup.py
 pupil_dlc/__init__.py

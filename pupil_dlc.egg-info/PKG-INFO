@@ -1,6 +1,7 @@
 Metadata-Version: 2.1
 Name: pupil_dlc
 Version: 0.1
+License-File: LICENSE
 Requires-Dist: deeplabcut
 Requires-Dist: pandas
 Requires-Dist: numpy
