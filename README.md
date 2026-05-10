@@ -104,3 +104,11 @@ If you use our corresponding pupil data (cite paper 1), or our tool please cite 
 
 2. Mathis, A., Mamidanna, P., Cury, K.M., Abe, T., Murthy, V.N., Mathis, M.W. and Bethge, M., 2018. DeepLabCut: markerless pose estimation of user-defined body parts with deep learning. Nature neuroscience, 21(9), pp.1281-1289.
 ```
+
+## License
+
+This project is licensed under the GNU General Public License v3.0.
+
+This means you may use, modify, and redistribute this software, but any redistributed modified version must also remain open source under the same license.
+
+See the LICENSE file for the full license text.
