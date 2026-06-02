@@ -84,7 +84,7 @@ pupil-dlc
 
 You'll be guided through:
 
-Choosing mode (IM or GM or RT)
+Choosing mode (IM or GM or FT)
 
 Providing experiment name
 
