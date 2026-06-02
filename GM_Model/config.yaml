@@ -1,79 +1,14 @@
+    # Project definitions (do not edit)
 Task: GM
-TrainingFraction:
-- 0.95
-alphavalue: 0.7
-batch_size: 8
-bodyparts:
-- Point1
-- Point2
-- Point3
-- Point4
-- Point5
-- Point6
-- Point7
-- Point8
-- Point9
-- Point10
-- Point11
-- Point12
-- Eye1
-- Eye2
-- Eye3
-- Eye4
-colormap: rainbow
-corner2move2:
-- 50
-- 50
-cropping: false
-date: Nov17
-default_augmenter: default
-default_net_type: resnet_50
-dotsize: 2
-identity: null
-iteration: 0
-move2corner: true
-multianimalproject: false
-numframes2pick: 20
-pcutoff: 0.6
-project_path: c:\users\valyria\desktop\valyriverse_pupil-dlc\pupil-dlc\GM_Model
 scorer: Parsa
-skeleton:
-- - Point1
-  - Point2
-- - Point2
-  - Point3
-- - Point3
-  - Point4
-- - Point4
-  - Point5
-- - Point5
-  - Point6
-- - Point6
-  - Point7
-- - Point7
-  - Point8
-- - Point8
-  - Point9
-- - Point9
-  - Point10
-- - Point10
-  - Point11
-- - Point11
-  - Point12
-- - Point12
-  - Point1
-- - Eye1
-  - Eye2
-- - Eye2
-  - Eye3
-- - Eye3
-  - Eye4
-- - Eye4
-  - Eye1
-skeleton_color: black
-snapshotindex: -1
-start: 0
-stop: 1
+date: Nov17
+multianimalproject: false
+identity:
+
+    # Project path (change when moving around)
+project_path: C:\Users\Valyria\Desktop\valyriverse_pupil-dlc\Pupil-DLC\GM_Model
+
+    # Annotation data set configuration (and individual video cropping parameters)
 video_sets:
   D:\Allen\Pupil_Tracking_Project\DLC_projects\GM_vs_IM\videos\mouse771425_iso\241120105438-0.avi:
     crop: 0, 640, 0, 480
@@ -259,7 +194,88 @@ video_sets:
   : crop: 0, 640, 0, 480
   ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M742746_UPE-Parsa-2024-07-27\videos\240718110606-0.avi
   : crop: 0, 640, 0, 480
+bodyparts:
+- Point1
+- Point2
+- Point3
+- Point4
+- Point5
+- Point6
+- Point7
+- Point8
+- Point9
+- Point10
+- Point11
+- Point12
+- Eye1
+- Eye2
+- Eye3
+- Eye4
+
+    # Fraction of video to start/stop when extracting frames for labeling/refinement
+start: 0
+stop: 1
+numframes2pick: 20
+
+    # Plotting configuration
+skeleton:
+- - Point1
+  - Point2
+- - Point2
+  - Point3
+- - Point3
+  - Point4
+- - Point4
+  - Point5
+- - Point5
+  - Point6
+- - Point6
+  - Point7
+- - Point7
+  - Point8
+- - Point8
+  - Point9
+- - Point9
+  - Point10
+- - Point10
+  - Point11
+- - Point11
+  - Point12
+- - Point12
+  - Point1
+- - Eye1
+  - Eye2
+- - Eye2
+  - Eye3
+- - Eye3
+  - Eye4
+- - Eye4
+  - Eye1
+skeleton_color: black
+pcutoff: 0.6
+dotsize: 2
+alphavalue: 0.7
+colormap: rainbow
+
+    # Training,Evaluation and Analysis configuration
+TrainingFraction:
+- 0.95
+iteration: 0
+default_net_type: resnet_50
+default_augmenter: default
+snapshotindex: -1
+batch_size: 8
+
+    # Cropping Parameters (for analysis and outlier frame detection)
+cropping: false
+    #if cropping is true for analysis, then set the values here:
 x1: 0
 x2: 640
 y1: 277
 y2: 624
+
+    # Refinement configuration (parameters from annotation dataset configuration also relevant in this stage)
+corner2move2:
+- 50
+- 50
+move2corner: true

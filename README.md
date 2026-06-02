@@ -14,6 +14,8 @@ Compiled annotated frames to train our model is publicly [available](https://doi
 
 There is a video [Tutorial](https://youtu.be/G_frXJzCL6I) as well.
 
+There is a jupyter Notebook demo under Test folder as well.
+
 If you encounter any problems or bugs, please reach out [here](https://github.com/Valyriverse/Pupil-DLC/issues).
 
 ---
@@ -82,7 +84,7 @@ pupil-dlc
 
 You'll be guided through:
 
-Choosing mode (IM or GM)
+Choosing mode (IM or GM or RT)
 
 Providing experiment name
 

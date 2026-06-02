@@ -52,8 +52,6 @@ def _setup_xla_libdevice():
 _setup_xla_libdevice()
 #import matplotlib
 #matplotlib.use('Agg')
-import sys
-import shutil
 import click
 import pyfiglet
 import pandas as pd
@@ -206,6 +204,71 @@ def _patch_dlc_labeling_toolbox():
         pass  # best-effort; if DLC layout changed, proceed unpatched
 
 
+def _restore_moved_videos(video_paths, project_dir):
+    """If DLC moved videos into project/videos/ (symlink fallback), move them back."""
+    videos_dir = os.path.join(project_dir, "videos")
+    for vp in video_paths:
+        if not os.path.exists(vp):
+            moved = os.path.join(videos_dir, os.path.basename(vp))
+            if os.path.exists(moved):
+                _shutil.move(moved, vp)
+                click.secho(f"→ video restored to original location: {vp}", fg="yellow")
+
+
+def _verify_and_relabel(config_path, project_dir, video_paths, scorer):
+    """Check that every user video has saved labels; offer to re-open the GUI if not."""
+    _user_label_dirs = [
+        os.path.join(project_dir, "labeled-data", os.path.splitext(os.path.basename(vp))[0])
+        for vp in video_paths
+    ]
+    _missing = [
+        d for d in _user_label_dirs
+        if not os.path.exists(os.path.join(d, f"CollectedData_{scorer}.h5"))
+    ]
+    if not _missing:
+        return True
+    click.secho(
+        "\nWarning: no saved labels found for your video(s):\n"
+        + "\n".join(f"  {d}" for d in _missing)
+        + "\n\nMake sure you clicked Save in the labeling GUI before closing it.",
+        fg="yellow"
+    )
+    if not click.confirm("Re-open the labeling GUI to save your labels?", default=True):
+        click.echo("Proceeding without user labels.")
+        return False
+    _patch_dlc_labeling_toolbox()
+    deeplabcut.label_frames(config_path)
+    if not click.confirm("Labels saved? Proceed?", default=True):
+        click.echo("Aborted.")
+        return None  # caller should return
+    return True
+
+
+def _patch_pose_cfg_for_finetuning(project_dir, gm_snapshot_path):
+    """Point init_weights at the GM checkpoint and lower LRs for fine-tuning."""
+    import glob as _glob
+    import yaml as _yaml
+
+    cfgs = _glob.glob(
+        os.path.join(project_dir, 'dlc-models', 'iteration-0', '*', 'train', 'pose_cfg.yaml')
+    )
+    if not cfgs:
+        raise click.ClickException(
+            "Could not find pose_cfg.yaml — create_training_dataset may have failed."
+        )
+    pose_cfg_path = cfgs[0]
+    with open(pose_cfg_path, 'r') as _f:
+        cfg = _yaml.safe_load(_f)
+
+    cfg['init_weights'] = gm_snapshot_path
+    cfg['multi_step'] = [[0.0005, 10000], [0.0001, 100000], [0.00005, 200000]]
+
+    with open(pose_cfg_path, 'w') as _f:
+        _yaml.dump(cfg, _f, default_flow_style=False)
+
+    click.secho(f"→ fine-tuning from GM checkpoint: {gm_snapshot_path}", fg="green")
+
+
 def _download_labeled_data(project_dir, scorer):
     """Ensure GM data is in the project, using a persistent global cache to avoid re-downloads."""
     _ensure_gm_cache()
@@ -351,8 +414,8 @@ def main():
 
     # choose path
     mode = click.prompt(
-        "Model? [IM=Individual, GM=General, RT=ReTraining]",
-        type=click.Choice(["IM", "GM", "RT"]), default="GM"
+        "Model? [IM=Individual, GM=General, RT=ReTraining, FT=FineTuning]",
+        type=click.Choice(["IM", "GM", "RT", "FT"]), default="GM"
     )
     default_dir = os.getcwd()
     working_dir = click.prompt(f"Working Directory [default: {default_dir}]", 
@@ -470,7 +533,7 @@ def main():
             autotune=False, displayiters=100,
             saveiters=15000, maxiters=500000, allow_growth=True
         )
-        deeplabcut.evaluate_network(config_path, Shuffles=[1], plotting=True)
+        deeplabcut.evaluate_network(config_path, Shuffles=[1], plotting=False)
 
     elif mode == "GM":
         config_path = click.prompt(
@@ -489,7 +552,7 @@ def main():
             show_default=True
         )
 
-    else:  # mode == "RT"
+    elif mode == "RT":
         gpu_number = click.prompt(
             "Which GPU to use? (0 = display GPU, 1 = non-display GPU — prefer 1 for speed)",
             type=click.IntRange(min=0),
@@ -505,10 +568,10 @@ def main():
         )
         click.echo(f"→ RT project created: {config_path}")
 
-        # Apply GM bodyparts/skeleton to the new project config
         replace_yaml_section(config_path)
 
         project_dir = os.path.normpath(os.path.dirname(config_path))
+        _restore_moved_videos(video_paths, project_dir)
 
         # Read the scorer DLC assigned (derived from the experimenter name prompt)
         import yaml as _yaml
@@ -539,38 +602,9 @@ def main():
             click.echo("Aborted. Re-run RT mode when labeling is done.")
             return
 
-        # Verify the user actually saved labels for their video before proceeding.
-        # DLC's labeling GUI has a known pandas chained-assignment issue that can
-        # silently prevent saves; catch this early with a clear message.
-        _user_label_dirs = [
-            os.path.join(project_dir, "labeled-data", os.path.splitext(os.path.basename(vp))[0])
-            for vp in video_paths
-        ]
-        _missing_labels = [
-            d for d in _user_label_dirs
-            if not os.path.exists(os.path.join(d, f"CollectedData_{_scorer}.h5"))
-        ]
-        if _missing_labels:
-            click.secho(
-                "\nWarning: no saved labels found for your video(s):\n"
-                + "\n".join(f"  {d}" for d in _missing_labels)
-                + "\n\nMake sure you clicked Save in the labeling GUI before closing it.",
-                fg="yellow"
-            )
-            if not click.confirm(
-                "Re-open the labeling GUI to save your labels?", default=True
-            ):
-                click.echo(
-                    "Proceeding without user labels — retraining will use GM data only."
-                )
-            else:
-                _patch_dlc_labeling_toolbox()
-                deeplabcut.label_frames(config_path)
-                if not click.confirm(
-                    "Labels saved? Proceed to retraining?", default=True
-                ):
-                    click.echo("Aborted. Re-run RT mode when labeling is done.")
-                    return
+        _result = _verify_and_relabel(config_path, project_dir, video_paths, _scorer)
+        if _result is None:
+            return
 
         deeplabcut.check_labels(config_path)
         deeplabcut.create_training_dataset(config_path, augmenter_type='imgaug')
@@ -599,14 +633,106 @@ def main():
             autotune=False, displayiters=100,
             saveiters=15000, maxiters=max_iters, allow_growth=True
         )
-        deeplabcut.evaluate_network(config_path, Shuffles=[1], plotting=True)
+        deeplabcut.evaluate_network(config_path, Shuffles=[1], plotting=False)
 
         if not click.confirm("Run inference on your video with the retrained model?", default=True):
             return
 
-    # IM, GM, and RT (if inference confirmed) all converge here
-    if plot_flag:
-        import matplotlib.pyplot as plt
+    elif mode == "FT":
+        gpu_number = click.prompt(
+            "Which GPU to use? (0 = display GPU, 1 = non-display GPU — prefer 1 for speed)",
+            type=click.IntRange(min=0),
+            default=1,
+            show_default=True
+        )
+
+        # Allow skipping straight to inference on an already-trained FT project.
+        _ft_inference_only = click.confirm(
+            "Skip training — run inference on an existing FT project?",
+            default=False
+        )
+
+        if _ft_inference_only:
+            config_path = click.prompt(
+                "Path to the existing FT project config.yaml",
+                type=click.Path(exists=True, dir_okay=False)
+            )
+            project_dir = os.path.normpath(os.path.dirname(config_path))
+            # Videos live in the project's videos/ folder (DLC may have moved them there)
+            _videos_dir = os.path.join(project_dir, "videos")
+            video_paths = [
+                os.path.join(_videos_dir, f)
+                for f in os.listdir(_videos_dir)
+                if f.lower().endswith(('.avi', '.mp4'))
+            ] if os.path.isdir(_videos_dir) else video_paths
+
+        else:
+            config_path = deeplabcut.create_new_project(
+                experiment, "You", video_paths,
+                working_directory=working_dir,
+                copy_videos=False, multianimal=False
+            )
+            click.echo(f"→ FT project created: {config_path}")
+
+            replace_yaml_section(config_path)
+
+            project_dir = os.path.normpath(os.path.dirname(config_path))
+
+            _restore_moved_videos(video_paths, project_dir)
+
+            import yaml as _yaml
+            with open(config_path, 'r') as _f:
+                _scorer = _yaml.safe_load(_f).get('scorer', 'You')
+
+            frame_mode = click.prompt(
+                "Frame extraction mode",
+                type=click.Choice(['automatic', 'manual']),
+                default='automatic'
+            )
+            click.secho("→ extracting frames from your video for labeling…", fg="yellow")
+            deeplabcut.extract_frames(config_path, mode=frame_mode,
+                                      algo='uniform', userfeedback=False)
+
+            click.secho(
+                "→ label the extracted frames in the GUI, then close it to continue.",
+                fg="yellow"
+            )
+            _patch_dlc_labeling_toolbox()
+            deeplabcut.label_frames(config_path)
+
+            if not click.confirm("Labeling complete? Proceed to fine-tuning?", default=True):
+                click.echo("Aborted. Re-run FT mode when labeling is done.")
+                return
+
+            _result = _verify_and_relabel(config_path, project_dir, video_paths, _scorer)
+            if _result is None:
+                return
+
+            deeplabcut.check_labels(config_path)
+            deeplabcut.create_training_dataset(config_path, augmenter_type='imgaug')
+
+            gm_snapshot = os.path.normpath(os.path.join(
+                repo_root, 'GM_Model', 'dlc-models', 'iteration-0',
+                'GMNov17-trainset95shuffle1', 'train', 'snapshot-1000000'
+            ))
+            _patch_pose_cfg_for_finetuning(project_dir, gm_snapshot)
+
+            max_iters = click.prompt(
+                "Max fine-tuning iterations",
+                type=int, default=50000
+            )
+            deeplabcut.train_network(
+                config_path, shuffle=1, trainingsetindex=0,
+                gputouse=gpu_number, max_snapshots_to_keep=5,
+                autotune=False, displayiters=100,
+                saveiters=15000, maxiters=max_iters, allow_growth=True
+            )
+            deeplabcut.evaluate_network(config_path, Shuffles=[1], plotting=False)
+
+        if not click.confirm("Run inference on your video with the fine-tuned model?", default=True):
+            return
+
+    # IM, GM, RT, and FT (if inference confirmed) all converge here
     analyze_and_ellipse(
         experiment=experiment,
         video_paths=video_paths,
