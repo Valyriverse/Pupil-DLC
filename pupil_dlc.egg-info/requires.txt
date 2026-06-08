@@ -5,3 +5,5 @@ scikit-image
 click
 pyfiglet
 pyyaml
+py7zr
+requests

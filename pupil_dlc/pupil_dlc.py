@@ -2,6 +2,7 @@
 
 #!/usr/bin/env python
 import os
+import sys
 import shutil as _shutil
 os.environ["MPLBACKEND"] = "Agg"
 os.environ.setdefault("TF_GPU_THREAD_MODE", "gpu_private")
@@ -66,10 +67,16 @@ from .ellipse import ellipse_fitting
 from .yaml_section import replace_yaml_section
 from .fast_analyze import patch_dlc_inference
 
-_FIGSHARE_URL = "https://ndownloader.figshare.com/files/61704058"
-_TAR_NAME = "Manual_annotations.tar"
+# Two-part split archive from https://doi.org/10.6084/m9.figshare.31282714
+# Each entry: (figshare_file_id, local_7z_filename, label_for_display)
+_FIGSHARE_FILES = [
+    ("65291688", "Labeled-data-1st.7z", "part 1 (~6.2 GB)"),
+    ("65291697", "labeled-data-2nd.7z", "part 2 (~6.3 GB)"),
+]
 _GLOBAL_GM_CACHE = os.path.join(os.path.expanduser("~"), ".pupil_dlc_cache", "gm_labeled_data")
 _GM_SCORER = "Parsa"  # scorer name embedded in the Figshare dataset
+# Bump this when the Figshare dataset changes so stale caches are wiped and re-downloaded.
+_CACHE_VERSION = "2"
 
 
 def _patch_config_project_path(config_path):
@@ -87,44 +94,61 @@ def _patch_config_project_path(config_path):
 
 
 def _ensure_gm_cache():
-    """Download and extract GM labeled data to a global cache — runs once ever."""
-    import tarfile
+    """Download and extract GM labeled data (two-part 7z) to a global cache — runs once ever."""
     import requests
+    import py7zr
 
     cache_marker = os.path.join(_GLOBAL_GM_CACHE, ".gm_data_ok")
     if os.path.exists(cache_marker):
-        return  # already cached globally
+        cached_version = open(cache_marker).read().strip()
+        if cached_version == _CACHE_VERSION:
+            return  # already cached at current version
+        click.secho(
+            f"→ GM cache version mismatch (have {cached_version!r}, need {_CACHE_VERSION!r}) "
+            f"— wiping and re-downloading…", fg="yellow"
+        )
+        _shutil.rmtree(_GLOBAL_GM_CACHE)
 
     os.makedirs(_GLOBAL_GM_CACHE, exist_ok=True)
-    tar_path = os.path.join(os.path.dirname(_GLOBAL_GM_CACHE), _TAR_NAME)
+    cache_parent = os.path.dirname(_GLOBAL_GM_CACHE)
 
-    click.secho(
-        "→ downloading GM labeled data (~6.3 GB) from Figshare — one-time download, "
-        f"cached at {_GLOBAL_GM_CACHE}…", fg="yellow"
-    )
-    resp = requests.get(_FIGSHARE_URL, stream=True)
-    resp.raise_for_status()
-    total = int(resp.headers.get('content-length', 0))
-    with open(tar_path, 'wb') as f, tqdm(
-        total=total, unit='B', unit_scale=True, desc=_TAR_NAME
-    ) as pbar:
-        for chunk in resp.iter_content(chunk_size=1024 * 1024):
-            f.write(chunk)
-            pbar.update(len(chunk))
-    click.echo("→ download complete.")
+    for file_id, archive_name, part_label in _FIGSHARE_FILES:
+        url = f"https://ndownloader.figshare.com/files/{file_id}"
+        archive_path = os.path.join(cache_parent, archive_name)
+        click.secho(
+            f"→ downloading GM labeled data {part_label} from Figshare — one-time download, "
+            f"cached at {_GLOBAL_GM_CACHE}…", fg="yellow"
+        )
+        resp = requests.get(url, stream=True)
+        resp.raise_for_status()
+        total = int(resp.headers.get('content-length', 0))
+        with open(archive_path, 'wb') as f, tqdm(
+            total=total, unit='B', unit_scale=True, desc=archive_name
+        ) as pbar:
+            for chunk in resp.iter_content(chunk_size=1024 * 1024):
+                f.write(chunk)
+                pbar.update(len(chunk))
+        click.echo(f"→ {part_label} download complete, extracting…")
 
-    click.echo(f"→ extracting to global cache…")
-    with tarfile.open(tar_path) as tf:
-        for member in tqdm(tf.getmembers(), desc="extracting"):
-            if '/' not in member.name:
-                continue
-            member.name = member.name.split('/', 1)[1]
-            if not member.name:
-                continue
-            tf.extract(member, path=_GLOBAL_GM_CACHE)
+        # Extract into a temp subfolder then flatten one top-level directory if present
+        tmp_dir = archive_path + "_extracted"
+        os.makedirs(tmp_dir, exist_ok=True)
+        with py7zr.SevenZipFile(archive_path, mode='r') as zf:
+            zf.extractall(path=tmp_dir)
 
-    os.remove(tar_path)
-    open(cache_marker, 'w').close()
+        # If the archive extracted into a single top-level folder, descend into it
+        entries = os.listdir(tmp_dir)
+        src_root = os.path.join(tmp_dir, entries[0]) if (
+            len(entries) == 1 and os.path.isdir(os.path.join(tmp_dir, entries[0]))
+        ) else tmp_dir
+
+        for item in tqdm(os.listdir(src_root), desc=f"staging {part_label}"):
+            _shutil.move(os.path.join(src_root, item), os.path.join(_GLOBAL_GM_CACHE, item))
+
+        _shutil.rmtree(tmp_dir)
+        os.remove(archive_path)
+
+    open(cache_marker, 'w').write(_CACHE_VERSION)
     click.secho(f"→ GM data cached globally at {_GLOBAL_GM_CACHE}", fg="green")
 
 
@@ -179,15 +203,47 @@ def _link_gm_data_to_project(project_dir, scorer):
                     except OSError:
                         _shutil.copy2(src_file, dst_file)
 
+    # Register every GM session in video_sets so create_training_dataset finds them.
+    # DLC only uses the path string to derive the labeled-data folder stem — the file
+    # does not need to exist. Without this, merge_annotateddatasets silently skips
+    # any labeled-data folder that has no matching video_sets key.
+    import yaml as _yaml
+    config_path = os.path.join(project_dir, "config.yaml")
+    with open(config_path, 'r') as _f:
+        cfg = _yaml.safe_load(_f)
+    registered = set(cfg.get("video_sets", {}).keys())
+    for session in session_dirs:
+        placeholder = os.path.join(project_dir, "videos", f"{session}.mp4")
+        if placeholder not in registered:
+            cfg.setdefault("video_sets", {})[placeholder] = {"crop": "0, 640, 0, 480"}
+    with open(config_path, 'w') as _f:
+        _yaml.dump(cfg, _f, default_flow_style=False, allow_unicode=True)
+
     open(marker, 'w').close()
     click.secho(f"→ GM labeled-data ready in {labeled_data_dir}", fg="green")
 
 
 def _patch_dlc_labeling_toolbox():
-    """Fix DLC's saveEachImage chained-indexing bug that silently drops all labels."""
-    try:
-        from deeplabcut.gui.labeling_toolbox import MainFrame
+    """Monkey-patch three DLC labeling-toolbox bugs that cause silent data loss and
+    progressive slowdown:
 
+    1. saveEachImage — chained indexing silently drops labels.
+       Fix: single .loc[(row, col)] tuple indexing.
+
+    2. ImagePanel.drawplot — axes.clear() + imshow() on every navigation accumulates
+       matplotlib artists and slows down over time.
+       Fix: cache AxesImage in _image_obj; use set_data() on subsequent calls.
+
+    3. mpl_connect accumulation — button_press/release listeners stack up with each
+       image navigation because old ones are never disconnected.
+       Fix: wrap canvas.mpl_connect to auto-disconnect duplicate event types.
+    """
+    try:
+        import cv2 as _cv2
+        import numpy as _np
+        from deeplabcut.gui.labeling_toolbox import MainFrame, ImagePanel
+
+        # --- fix 1: saveEachImage ---
         def _saveEachImage_fixed(self):
             for bp in self.updatedCoords:
                 self.dataFrame.loc[
@@ -200,6 +256,75 @@ def _patch_dlc_labeling_toolbox():
                 ] = bp[-1][1]
 
         MainFrame.saveEachImage = _saveEachImage_fixed
+
+        # --- fix 2: ImagePanel.drawplot — reuse imshow object ---
+        def _drawplot_fixed(self, img, img_name, itr, index, bodyparts, cmap, keep_view=False):
+            import matplotlib.pyplot as _plt
+            from mpl_toolkits.axes_grid1 import make_axes_locatable
+            from matplotlib.backends.backend_wxagg import NavigationToolbar2WxAgg as NavigationToolbar
+
+            xlim = self.axes.get_xlim()
+            ylim = self.axes.get_ylim()
+            im = _cv2.imread(img)[..., ::-1]
+            epLines, sourcePts, offsets = self.retrieveData_and_computeEpLines(img, itr)
+            if epLines is not None:
+                from deeplabcut.gui.labeling_toolbox import getColorIndices
+                norm, colorIndex = getColorIndices(img, bodyparts)
+                im = self.drawEpLines(im.copy(), epLines, sourcePts, offsets, colorIndex, cmap, norm)
+
+            if getattr(self, '_image_obj', None) is None:
+                self.axes.clear()
+                self._image_obj = self.axes.imshow(im, cmap=cmap)
+                self.orig_xlim = self.axes.get_xlim()
+                self.orig_ylim = self.axes.get_ylim()
+                divider = make_axes_locatable(self.axes)
+                cax = divider.append_axes("right", size="5%", pad=0.05)
+                _plt.colorbar(
+                    _plt.cm.ScalarMappable(cmap=cmap),
+                    cax=cax,
+                    ticks=_np.linspace(0, 1, len(bodyparts)),
+                ).set_ticklabels(bodyparts[::-1])
+                # Fix 3: install mpl_connect dedup on the canvas the first time drawplot
+                # runs. At this point self.canvas is guaranteed to exist (set by BasePanel),
+                # and MainFrame will store a reference to the same object, so all
+                # subsequent mpl_connect calls from nextImage/prevImage go through here.
+                if not getattr(self.canvas, '_pupildlc_dedup', False):
+                    _tracked = {}
+                    _real_connect = self.canvas.mpl_connect
+                    _real_disconnect = self.canvas.mpl_disconnect
+
+                    def _dedup_connect(event, callback):
+                        if event in _tracked:
+                            try:
+                                _real_disconnect(_tracked[event])
+                            except Exception:
+                                pass
+                        cid = _real_connect(event, callback)
+                        _tracked[event] = cid
+                        return cid
+
+                    self.canvas.mpl_connect = _dedup_connect
+                    self.canvas._pupildlc_dedup = True
+            else:
+                for patch in list(self.axes.patches):
+                    patch.remove()
+                for txt in list(self.axes.texts):
+                    txt.remove()
+                self._image_obj.set_data(im)
+                if not keep_view:
+                    self.axes.set_xlim(self.orig_xlim)
+                    self.axes.set_ylim(self.orig_ylim)
+
+            self.axes.set_title(str(itr) + "/" + str(len(index) - 1) + " " + img_name)
+            if keep_view:
+                self.axes.set_xlim(xlim)
+                self.axes.set_ylim(ylim)
+            if self.toolbar is None:
+                self.toolbar = NavigationToolbar(self.canvas)
+            return (self.figure, self.axes, self.canvas, self.toolbar)
+
+        ImagePanel.drawplot = _drawplot_fixed
+
     except Exception:
         pass  # best-effort; if DLC layout changed, proceed unpatched
 
@@ -233,15 +358,52 @@ def _verify_and_relabel(config_path, project_dir, video_paths, scorer):
         + "\n\nMake sure you clicked Save in the labeling GUI before closing it.",
         fg="yellow"
     )
-    if not click.confirm("Re-open the labeling GUI to save your labels?", default=True):
+    if not _confirm("Re-open the labeling GUI to save your labels?", default=True):
         click.echo("Proceeding without user labels.")
         return False
     _patch_dlc_labeling_toolbox()
     deeplabcut.label_frames(config_path)
-    if not click.confirm("Labels saved? Proceed?", default=True):
+    if not _confirm("Labels saved? Proceed?", default=True):
         click.echo("Aborted.")
         return None  # caller should return
     return True
+
+
+def _find_gm_snapshot(repo_root):
+    """Return the path to the latest snapshot in GM_Model (without .index extension).
+
+    Globs the actual train/ directory so it stays correct after model retraining
+    regardless of the DLC project folder name (e.g. GMMay31 vs GMNov17).
+    """
+    import glob as _glob
+    import yaml as _yaml
+
+    gm_dir = os.path.join(repo_root, 'GM_Model')
+    gm_config = os.path.join(gm_dir, 'config.yaml')
+    if not os.path.exists(gm_config):
+        raise click.ClickException(f"GM_Model/config.yaml not found at: {gm_config}")
+
+    index_files = _glob.glob(
+        os.path.join(gm_dir, 'dlc-models', 'iteration-0', '*', 'train', 'snapshot-*.index')
+    )
+    if not index_files:
+        raise click.ClickException(
+            "No snapshots found in GM_Model/dlc-models/. "
+            "Make sure the GM_Model directory is intact."
+        )
+
+    with open(gm_config) as _f:
+        cfg = _yaml.safe_load(_f)
+    snapshotindex = cfg.get('snapshotindex', -1)
+    if snapshotindex == 'all':
+        snapshotindex = -1
+
+    sorted_snapshots = sorted(
+        index_files,
+        key=lambda p: int(os.path.basename(p).split('-')[1].split('.')[0])
+    )
+    chosen = sorted_snapshots[snapshotindex]
+    return chosen[:-len('.index')]
 
 
 def _patch_pose_cfg_for_finetuning(project_dir, gm_snapshot_path):
@@ -269,10 +431,6 @@ def _patch_pose_cfg_for_finetuning(project_dir, gm_snapshot_path):
     click.secho(f"→ fine-tuning from GM checkpoint: {gm_snapshot_path}", fg="green")
 
 
-def _download_labeled_data(project_dir, scorer):
-    """Ensure GM data is in the project, using a persistent global cache to avoid re-downloads."""
-    _ensure_gm_cache()
-    _link_gm_data_to_project(project_dir, scorer)
 
 def analyze_and_ellipse(experiment, video_paths, config_path, plot_flag=False,
                        filter_flag=False, filter_params=None,
@@ -407,6 +565,12 @@ def analyze_and_ellipse(experiment, video_paths, config_path, plot_flag=False,
             plt.close(fig)
             click.secho(f"→ pupil size plot saved: {out_png}", fg="cyan")
 
+def _confirm(message, default=True):
+    """click.confirm with a consistent lowercase [y/n] suffix regardless of default."""
+    return click.confirm(message, default=default, show_default=False,
+                         prompt_suffix=" [y/n]: ")
+
+
 @click.command()
 def main():
     click.clear()
@@ -418,26 +582,32 @@ def main():
         type=click.Choice(["IM", "GM", "RT", "FT"]), default="GM"
     )
     default_dir = os.getcwd()
-    working_dir = click.prompt(f"Working Directory [default: {default_dir}]", 
+    working_dir = click.prompt(f"Working Directory [default: {default_dir}]",
                                type=str, default=default_dir, show_default=False)
+    if sys.platform == "win32" and len(working_dir) > 80:
+        click.secho(
+            f"WARNING: Working directory path is {len(working_dir)} chars long. "
+            "On Windows (MAX_PATH=260), DLC checkpoint paths can exceed this limit "
+            "and cause a crash during training. Consider using a shorter path like D:\\FT_Work.",
+            fg="yellow"
+        )
     experiment = click.prompt("Experiment name", type=str)
     video_path = click.prompt(
         "Full path to your video file or folder", 
         type=click.Path(exists=True, file_okay=True, dir_okay=True)
     )
 
-    plot_flag = click.confirm(
-    "Generate pupil-diameter-over-time plots (saved as PNG)?",
-    default=False)
+    plot_flag = _confirm(
+        "Generate pupil-diameter-over-time plots (saved as PNG)?",
+        default=False)
 
-    make_labeled_video = click.confirm(
+    make_labeled_video = _confirm(
         "Create annotated video (DeepLabCut labeled video)?",
         default=False
     )
 
-
 # New filtering options
-    filter_flag = click.confirm(
+    filter_flag = _confirm(
         "Apply rate-of-change filtering to remove outliers/spikes?",
         default=True
     )
@@ -457,7 +627,7 @@ def main():
         filter_params = {}
 
     # Smoothing options
-    smooth_flag = click.confirm(
+    smooth_flag = _confirm(
         "Apply smoothing to pupil measurements?",
         default=True
     )
@@ -522,7 +692,7 @@ def main():
         while True:
             deeplabcut.extract_frames(config_path, mode="manual")
             deeplabcut.label_frames(config_path)
-            if click.confirm("Proceed to training?"):
+            if _confirm("Proceed to training?", default=True):
                 break
 
         deeplabcut.check_labels(config_path, visualizeindividuals=True)
@@ -578,10 +748,12 @@ def main():
         with open(config_path, 'r') as _f:
             _scorer = _yaml.safe_load(_f).get('scorer', 'You')
 
-        # Download GM data to global cache (once ever) then link into this project
-        _download_labeled_data(project_dir, _scorer)
+        # Download GM data to global cache (once ever) — do this before labeling so
+        # the user isn't waiting mid-session. Does NOT touch video_sets yet.
+        _ensure_gm_cache()
 
-        # Extract frames from user's video for labeling
+        # Extract frames from user's video for labeling.
+        # video_sets only contains the user's real video at this point.
         frame_mode = click.prompt(
             "Frame extraction mode",
             type=click.Choice(['automatic', 'manual']),
@@ -598,13 +770,17 @@ def main():
         _patch_dlc_labeling_toolbox()
         deeplabcut.label_frames(config_path)
 
-        if not click.confirm("Labeling complete? Proceed to retraining?", default=True):
+        if not _confirm("Labeling complete? Proceed to retraining?", default=True):
             click.echo("Aborted. Re-run RT mode when labeling is done.")
             return
 
         _result = _verify_and_relabel(config_path, project_dir, video_paths, _scorer)
         if _result is None:
             return
+
+        # Now link GM frames into labeled-data/ and register them in video_sets —
+        # after extract_frames so DLC never tries to open the placeholder video paths.
+        _link_gm_data_to_project(project_dir, _scorer)
 
         deeplabcut.check_labels(config_path)
         deeplabcut.create_training_dataset(config_path, augmenter_type='imgaug')
@@ -635,7 +811,7 @@ def main():
         )
         deeplabcut.evaluate_network(config_path, Shuffles=[1], plotting=False)
 
-        if not click.confirm("Run inference on your video with the retrained model?", default=True):
+        if not _confirm("Run inference on your video with the retrained model?", default=True):
             return
 
     elif mode == "FT":
@@ -647,7 +823,7 @@ def main():
         )
 
         # Allow skipping straight to inference on an already-trained FT project.
-        _ft_inference_only = click.confirm(
+        _ft_inference_only = _confirm(
             "Skip training — run inference on an existing FT project?",
             default=False
         )
@@ -700,7 +876,7 @@ def main():
             _patch_dlc_labeling_toolbox()
             deeplabcut.label_frames(config_path)
 
-            if not click.confirm("Labeling complete? Proceed to fine-tuning?", default=True):
+            if not _confirm("Labeling complete? Proceed to fine-tuning?", default=True):
                 click.echo("Aborted. Re-run FT mode when labeling is done.")
                 return
 
@@ -711,10 +887,7 @@ def main():
             deeplabcut.check_labels(config_path)
             deeplabcut.create_training_dataset(config_path, augmenter_type='imgaug')
 
-            gm_snapshot = os.path.normpath(os.path.join(
-                repo_root, 'GM_Model', 'dlc-models', 'iteration-0',
-                'GMNov17-trainset95shuffle1', 'train', 'snapshot-1000000'
-            ))
+            gm_snapshot = _find_gm_snapshot(repo_root)
             _patch_pose_cfg_for_finetuning(project_dir, gm_snapshot)
 
             max_iters = click.prompt(
@@ -729,7 +902,7 @@ def main():
             )
             deeplabcut.evaluate_network(config_path, Shuffles=[1], plotting=False)
 
-        if not click.confirm("Run inference on your video with the fine-tuned model?", default=True):
+        if not _confirm("Run inference on your video with the fine-tuned model?", default=True):
             return
 
     # IM, GM, RT, and FT (if inference confirmed) all converge here

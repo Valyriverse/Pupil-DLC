@@ -1,199 +1,8 @@
-    # Project definitions (do not edit)
 Task: GM
-scorer: Parsa
-date: Nov17
-multianimalproject: false
-identity:
-
-    # Project path (change when moving around)
-project_path: C:\Users\Valyria\Desktop\valyriverse_pupil-dlc\Pupil-DLC\GM_Model
-
-    # Annotation data set configuration (and individual video cropping parameters)
-video_sets:
-  D:\Allen\Pupil_Tracking_Project\DLC_projects\GM_vs_IM\videos\mouse771425_iso\241120105438-0.avi:
-    crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M577578_ASE-Parsa-2024-10-12\videos\210708102517-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M598181_ASE-Parsa-2024-10-13\videos\211215110146-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M622179_ASE-Parsa-2024-10-13\videos\220414102032-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M622180_ASE-Parsa-2024-10-13\videos\220526104840-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M631037_AE-Parsa-2024-05-04\videos\221206095347-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M631037_UE-Parsa-2024-05-03\videos\221207103420-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M631538_ASE-Parsa-2024-10-13\videos\220609110421-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M638330_ASE-Parsa-2024-10-13\videos\220804103008-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M654182_AE-Parsa-2024-05-04\videos\221201103327-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M655955_AE-Parsa-2024-05-03\videos\221213100447-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M655955_UE-Parsa-2024-05-03\videos\221214103738-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M655956_UE-Parsa-2024-04-29\videos\221216104456-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M655957_ASE-Parsa-2024-10-13\videos\221209110902-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M657902_ASE-Parsa-2024-10-20\videos\230118112507-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M657904_ASE-Parsa-2024-10-13\videos\230120101424-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M657905_ASE-Parsa-2024-10-13\videos\230131105634-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M666193_AE-Parsa-2024-04-29\videos\230215114359-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M666193_PE-Parsa-2024-04-29\videos\230216105535-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M666193_UE-Parsa-2024-04-29\videos\230217122234-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M666194_AE-Parsa-2024-04-29\videos\230222123242-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M666194_PE-Parsa-2024-04-29\videos\230223104014-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M666194_UE-Parsa-2024-04-29\videos\230224111927-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M666196_A-Parsa-2024-02-18\videos\230315122900-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M666196_P-Parsa-2024-02-19\videos\230316102114-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M669117_AE-Parsa-2024-04-29\videos\230329110812-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M669117_UE-Parsa-2024-04-28\videos\230331115134-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M669118_PE-Parsa-2024-04-29\videos\230324095515-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M676726_AIE-Parsa-2024-04-28\videos\230504110147-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M676726_PE-Parsa-2024-04-28\videos\230503110731-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M676727_AIE-Parsa-2024-04-28\videos\230511094429-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M676727_PE_200-Parsa-2024-03-25\videos\230510094857-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M676727_UE-Parsa-2024-04-27\videos\230512113524-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M678912_PE-Parsa-2024-04-24\videos\230622114136-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M678912_UE-Parsa-2024-04-22\videos\230623110739-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M678913_PE-Parsa-2024-04-22\videos\230629124911-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M678913_UE-Parsa-2024-04-21\videos\230630105607-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M688277_AIE-Parsa-2024-02-26\videos\230921104107-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M688277_UE-Parsa-2024-02-26\videos\230922120359-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M689239_AIE-Parsa-2024-04-20\videos\230809111526-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M689239_PE-Parsa-2024-04-20\videos\230810112613-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M689239_UE-Parsa-2024-04-20\videos\230811113326-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M689240_AIE-Parsa-2024-04-20\videos\230818100318-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M689240_PE-Parsa-2024-04-20\videos\230817094619-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M689241_PE-Parsa-2024-04-21\videos\230727110441-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M689242_AIE-Parsa-2024-04-21\videos\230720105225-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M689242_PE-Parsa-2024-04-21\videos\230719102906-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M689242_UE-Parsa-2024-04-21\videos\230721123154-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M692643_PE-Parsa-2024-04-20\videos\230831124132-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M692644_PE-Parsa-2024-04-20\videos\230907115127-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M692644_UE-Parsa-2024-04-20\videos\230908111444-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M703062_AIE-Parsa-2024-04-17\videos\231019131259-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M703062_UE-Parsa-2024-04-16\videos\231020120029-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M703063_AIE-Parsa-2024-04-16\videos\231116111614-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M703063_PE-Parsa-2024-04-16\videos\231115110757-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M703063_UE-Parsa-2024-04-02\videos\231117124658-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M703064_AIE-Parsa-2024-04-02\videos\231129112314-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M703064_UE-Parsa-2024-04-01\videos\231201112001-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M703065_AIE-Parsa-2024-04-01\videos\231207102320-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M703065_PE-Parsa-2024-04-01\videos\231206110421-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M703065_UE-Parsa-2024-04-01\videos\231208115726-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M709400_AI-Parsa-2024-02-21\videos\240131113505-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M709400_K-Parsa-2024-02-19\videos\240201111201-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M709401_AIE-Parsa-2024-03-30\videos\231213095450-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M709401_PE-Parsa-2024-04-01\videos\231214111705-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M709402_AI-Parsa-2024-02-21\videos\240215102556-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M709402_K_2-Parsa-2024-02-21\videos\240214123117-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M709402_U-Parsa-2024-02-20\videos\240216111525-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M720762_AI-Parsa-2024-03-05\videos\240221103153-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M720762_K-Parsa-2024-03-05\videos\240222104320-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M724057_AE-Parsa-2024-05-07\videos\240405101410-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M724057_PE-Parsa-2024-05-04\videos\240404103504-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M728449_AE-Parsa-2024-05-04\videos\240410100428-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M728449_AE2-Parsa-2024-05-05\videos\240412101607-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M728449_PE-Parsa-2024-05-04\videos\240411103721-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M730911_AE-Parsa-2024-05-10\videos\240501115700-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M730911_KE-Parsa-2024-05-10\videos\240502104122-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M730913_AE-Parsa-2024-05-05\videos\240424104311-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M730913_KE-Parsa-2024-05-05\videos\240426101112-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M735049_AE-Parsa-2024-06-17\videos\240522110447-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M735049_KE-Parsa-2024-06-16\videos\240523114149-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M735050_AE-Parsa-2024-07-05\videos\240529100733-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M735050_PE-Parsa-2024-06-24\videos\240530094557-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M735051_AE-Parsa-2024-07-06\videos\240612113802-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M735051_AE2-Parsa-2024-07-06\videos\240614103636-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M735051_PE-Parsa-2024-07-06\videos\240613104342-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M735052_AE-Parsa-2024-07-06\videos\240619110705-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M735052_AE2-Parsa-2024-07-07\videos\240621105555-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M735052_PE-Parsa-2024-07-06\videos\240620104043-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M742746_ATE-Parsa-2024-07-28\videos\240717120929-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M742746_ATE2-Parsa-2024-07-28\videos\240717132047-0.avi
-  : crop: 0, 640, 0, 480
-  ? D:\Allen\Pupil_Tracking_Project\DLC_projects\General_model\Training_sets\GME\M742746_UPE-Parsa-2024-07-27\videos\240718110606-0.avi
-  : crop: 0, 640, 0, 480
+TrainingFraction:
+- 0.95
+alphavalue: 0.7
+batch_size: 8
 bodyparts:
 - Point1
 - Point2
@@ -211,13 +20,23 @@ bodyparts:
 - Eye2
 - Eye3
 - Eye4
-
-    # Fraction of video to start/stop when extracting frames for labeling/refinement
-start: 0
-stop: 1
+colormap: rainbow
+corner2move2:
+- 50
+- 50
+cropping: false
+date: May31
+default_augmenter: default
+default_net_type: resnet_50
+dotsize: 2
+identity: null
+iteration: 0
+move2corner: true
+multianimalproject: false
 numframes2pick: 20
-
-    # Plotting configuration
+pcutoff: 0.6
+project_path: c:\users\valyria\desktop\valyriverse_pupil-dlc\pupil-dlc\GM_Model
+scorer: valyriverse
 skeleton:
 - - Point1
   - Point2
@@ -252,30 +71,301 @@ skeleton:
 - - Eye4
   - Eye1
 skeleton_color: black
-pcutoff: 0.6
-dotsize: 2
-alphavalue: 0.7
-colormap: rainbow
-
-    # Training,Evaluation and Analysis configuration
-TrainingFraction:
-- 0.95
-iteration: 0
-default_net_type: resnet_50
-default_augmenter: default
 snapshotindex: -1
-batch_size: 8
-
-    # Cropping Parameters (for analysis and outlier frame detection)
-cropping: false
-    #if cropping is true for analysis, then set the values here:
+start: 0
+stop: 1
+video_sets:
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse631037\estim_2022-12-06_09-54-04\221206095347-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse631037\urethane_2022-12-07_10-34-51\221207103420-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse654182\estim_vis_2022-12-01_10-33-50\221201103327-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse654182\urethane_vis_2022-12-02_11-02-25\221202110204-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse655955\estim_2022-12-13_10-05-19\221213100447-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse655955\urethane_2022-12-14_10-38-00\221214103738-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse655956\estim_2022-12-15_10-07-59\221215100727-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse655956\urethane_2022-12-16_10-45-18\221216104456-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse657903\pilot_aw_psi_2023-01-13_12-18-22\230113121805-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse666193\pilot_aw_2023-02-15_11-44-11\230215114359-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse666193\pilot_aw_psi_2023-02-16_10-55-48\230216105535-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse666193\pilot_ur_2023-02-17_12-22-51\230217122234-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse666194\pilot_aw_2023-02-22_12-32-58\230222123242-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse666194\pilot_aw_psi_2023-02-23_10-40-34\230223104014-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse666194\pliot_ur_2023-02-24_11-19-43\230224111927-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse666196\pilot_aw_2023-03-15_12-29-06\230315122900-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse666196\pilot_aw_psi_2023-03-16_10-21-29\230316102114-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse669117\pilot_aw_2023-03-29_11-09-15\230329110812-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse669117\pilot_aw_psi_2023-03-30_11-37-07\230330113647-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse669117\pilot_ur_2023-03-31_11-51-53\230331115134-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse669118\pilot_aw_2023-03-23_12-14-39\230323121426-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse669118\pilot_aw_psi_2023-03-24_09-55-33\230324095515-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse673449\aw_2023-04-21_09-28-23\230421092758-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse673449\aw_psi_2023-04-19_11-23-26\230419112318-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse673449\aw_psi_d2_2023-04-20_10-05-31\230420100456-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse676726\aw_iso_2023-05-04_11-02-16\230504110147-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse676726\aw_psi_2023-05-03_11-08-22\230503110731-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse676727\aw_iso_2023-05-11_09-44-46\230511094429-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse676727\aw_psi_2023-05-10_09-49-12\230510094857-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse676727\urethane_2023-05-12_11-35-38\230512113524-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse678912\spont_aw_psi_2023-06-22_11-42-00\230622114136-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse678912\urethane_2023-06-23_11-08-17\230623110739-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse678913\spont_aw_psi_2023-06-29_12-49-40\230629124911-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse678913\urethane_2023-06-30_10-56-33\230630105607-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse688277\aw_iso_2023-09-21_10-41-15\230921104107-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse688277\urethane_2023-09-22_12-04-23\230922120359-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse689239\aw_iso_2023-08-09_11-15-42\230809111526-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse689239\aw_psi_2023-08-10_11-26-36\230810112613-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse689239\urethane_2023-08-11_11-33-46\230811113326-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse689240\aw_iso_2023-08-18_10-03-39\230818100318-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse689240\aw_psi_2023-08-17_09-46-39\230817094619-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse689241\spont_aw_psi_2023-07-27_11-05-05\230727110441-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse689242\aw_iso_2023-07-20_10-52-57\230720105225-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse689242\aw_psi_2023-07-19_10-29-49\230719102906-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse689242\urethane_2023-07-21_12-32-25\230721123154-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse692643\spont_aw_psi_2023-08-31_12-41-54\230831124132-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse692644\aw_iso_2023-09-06_11-27-02\230906112640-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse692644\aw_psi_2023-09-07_11-51-57\230907115127-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse692644\urethane_2023-09-08_11-15-18\230908111444-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse703062\aw_iso_2023-10-19_13-13-25\231019131259-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse703062\urethane_2023-10-20_12-00-46\231020120029-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse703063\aw_iso_2023-11-16_11-16-30\231116111614-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse703063\aw_psi_2023-11-15_11-08-12\231115110757-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse703063\urethane_2023-11-17_12-47-18\231117124658-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse703064\aw_iso_2023-11-29_11-23-30\231129112314-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse703064\aw_psi_2023-11-30_12-06-43\231130120634-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse703064\urethane_2023-12-01_11-20-15\231201112001-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse703065\aw_iso_2023-12-07_10-23-39\231207102320-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse703065\aw_psi_2023-12-06_11-04-39\231206110421-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse703065\urethane_2023-12-08_11-57-44\231208115726-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse709399\aw_iso_2024-01-24_10-26-14\240124102553-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse709400\aw_iso_2024-01-31_11-35-57\240131113505-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse709400\aw_ket_2024-02-01_11-12-34\240201111201-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse709400\urethane_2024-02-02_11-52-38\240202115214-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse709401\aw_iso_2023-12-13_09-55-07\231213095450-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse709401\aw_psi_2023-12-14_11-17-30\231214111705-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse709401\urethane_2023-12-15_11-03-00\231215110241-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse709402\aw_iso_2024-02-15_10-26-16\240215102556-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse709402\aw_ket_2024-02-14_12-32-14\240214123117-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse709402\urethane_2024-02-16_11-15-43\240216111525-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse720762\aw_iso_2024-02-21_10-32-01\240221103153-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse720762\aw_ket_2024-02-22_10-43-35\240222104320-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse720762\urethane_2024-02-23_11-35-21\240223113506-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse724057\aw_psi_2024-04-04_10-35-18\240404103504-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse724057\aw_sal_2024-04-03_10-32-05\240403103150-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse724057\awake_2024-04-05_10-14-31\240405101410-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse728449\aw_psi_2024-04-11_10-37-43\240411103721-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse728449\aw_sal2_2024-04-12_10-16-20\240412101607-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse728449\aw_sal_2024-04-10_10-04-50\240410100428-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse730911\aw_ket_2024-05-02_10-41-41\240502104122-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse730911\aw_sal_2024-05-01_11-57-16\240501115700-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse730911\aw_stim_train_2024-05-03_10-33-23\240503103303-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse730913\aw_ket_2024-04-26_10-11-34\240426101112-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse730913\aw_sal_2024-04-24_10-43-30\240424104311-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse735049\aw_ket_2024-05-23_11-42-08\240523114149-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse735049\aw_sal_2024-05-22_11-05-25\240522110447-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse735049\aw_stim_train_2024-05-24_10-36-53\240524103632-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse735050\aw_psi_2024-05-30_09-46-15\240530094557-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse735050\aw_sal2_2024-05-31_10-24-49\240531102407-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse735050\aw_sal_2024-05-29_10-07-49\240529100733-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse735051\aw_psi_2024-06-13_10-44-01\240613104342-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse735051\aw_sal2_2024-06-14_10-36-57\240614103636-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse735051\aw_sal_2024-06-12_11-38-41\240612113802-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse735052\aw_psi_2024-06-20_10-40-56\240620104043-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse735052\aw_sal2_2024-06-21_10-53-19\240621105555-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse735052\aw_sal_2024-06-19_11-07-23\240619110705-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse742746\aw_stim_train2_2024-07-17_13-21-04\240717132047-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse742746\aw_stim_train_2024-07-17_12-09-43\240717120929-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse742746\urethane_psi_2024-07-18_11-06-20\240718110606-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse742748\aw_stim_train_2024-08-01_11-03-49\240801110339-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse742748\urethane_psi_2024-08-02_11-03-14\240802110300-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse771424\iso_2024-11-13_11-58-19\241113115733-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse771425\iso_2024-11-20_10-55-08\241120105438-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse771426\THstim_d1_2024-12-19_12-19-39\241219121916-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse771426\THstim_d2_2024-12-20_09-28-35\241220092812-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse771426\aw_sal_2024-12-18_11-04-46\241218110416-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse821072\aw_ket_2025-11-13_10-16-45\251113101621-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse821072\aw_sal_2025-11-12_11-18-42\251112111743-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse821073\aw_ket_2025-11-20_11-16-51\251120111631-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse821073\aw_sal_2025-11-19_10-38-20\251119103757-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse858263\aw_iso_2026-04-16_12-28-20_001\260416122758-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse858263\aw_ur_2026-04-17_09-34-43\260417093424-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse858273\aw_iso_2026-05-12_10-52-31\260512105226-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse858273\aw_ur_2026-05-13_11-02-11\260513110151-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse858274\aw_iso_2026-05-05_10-43-35\260505104458-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse858274\aw_ur_2026-05-06_11-14-17\260506111351-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse858276\aw_iso_2026-05-07_11-22-14\260507112158-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Templeton_Videos\mouse858276\aw_ur_2026-05-08_11-21-29\260508112114-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Zap_Zip_Videos\mouse575101\estim_2021-07-02_10-18-23\210702101834-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Zap_Zip_Videos\mouse575102\estim_vis_2021-06-03_11-25-01\210603112454-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Zap_Zip_Videos\mouse582386\urethane_2021-07-15_11-36-58\210715113651-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Zap_Zip_Videos\mouse582387\estim_vis_2021-07-22_09-59-47\210722095940-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Zap_Zip_Videos\mouse586466\estim_vis_2021-07-29_10-37-41\210729103733-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Zap_Zip_Videos\mouse586468\estim_2021-08-20_11-34-54\210820113450-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Zap_Zip_Videos\mouse586468\estim_vis_2021-08-19_11-36-53\210819113648-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Zap_Zip_Videos\mouse586469\urethane_2021-10-08_12-21-28\211008122120-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Zap_Zip_Videos\mouse590478\estim_2021-10-28_11-46-57\211028114646-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Zap_Zip_Videos\mouse590478\urethane_2021-10-29_11-51-38\211029115125-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Zap_Zip_Videos\mouse590479\estim_2021-09-21_17-24-07\210921172321-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Zap_Zip_Videos\mouse590480\estim_vis_2021-11-11_10-54-19\211111105413-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Zap_Zip_Videos\mouse590480\urethane_vis_2021-11-12_11-14-43\211112111432-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Zap_Zip_Videos\mouse590481\estim_vis_2021-11-18_10-52-12\211118105206-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Zap_Zip_Videos\mouse590481\urethane_vis_2021-11-19_10-59-04\211119105855-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Zap_Zip_Videos\mouse599017\estim_vis_2022-02-10_10-53-32\220210105324-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Zap_Zip_Videos\mouse599017\urethane_vis_2022-02-11_11-12-13\220211111202-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Zap_Zip_Videos\mouse599974\estim_vis_2022-03-25_10-23-56\220325102351-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Zap_Zip_Videos\mouse599975\estim_vis_2022-03-31_12-03-06\220331120302-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Zap_Zip_Videos\mouse599975\urethane_vis_2022-04-01_10-58-41\220401105828-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Zap_Zip_Videos\mouse618552\estim_vis_2022-04-26_11-14-11\220426111405-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Zap_Zip_Videos\mouse618552\urethane_vis_2022-04-27_10-33-32\220427103321-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Zap_Zip_Videos\mouse621102\estim_vis_2022-06-02_10-23-50\220602102342-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Zap_Zip_Videos\mouse635397\estim_vis_2022-08-18_12-08-15\220818120808-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Zap_Zip_Videos\mouse638703\urethane_estim_2022-10-14_12-25-20\221014122446-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Zap_Zip_Videos\mouse654181\estim_vis_2022-11-22_09-42-58\221122094122-0.avi:
+    crop: 0, 640, 0, 480
+  D:\Allen\Pupil_Tracking_Project\videos\Zap_Zip_Videos\mouse654181\urethane_vis_2022-11-23_08-30-16\221123083000-0.avi:
+    crop: 0, 640, 0, 480
 x1: 0
 x2: 640
 y1: 277
 y2: 624
-
-    # Refinement configuration (parameters from annotation dataset configuration also relevant in this stage)
-corner2move2:
-- 50
-- 50
-move2corner: true

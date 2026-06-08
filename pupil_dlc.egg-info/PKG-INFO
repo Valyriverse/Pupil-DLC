@@ -9,3 +9,5 @@ Requires-Dist: scikit-image
 Requires-Dist: click
 Requires-Dist: pyfiglet
 Requires-Dist: pyyaml
+Requires-Dist: py7zr
+Requires-Dist: requests

@@ -1,4 +1,4 @@
-name: pupil-dlc
+name: pupil-dlc-exp1
 channels:
   - conda-forge
   - defaults
@@ -21,4 +21,3 @@ dependencies:
       - opencv-python-headless
       - tqdm
       - matplotlib
-      - onnxruntime-gpu

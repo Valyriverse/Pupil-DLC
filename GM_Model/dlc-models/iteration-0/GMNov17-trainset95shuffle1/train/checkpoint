@@ -1,6 +1,0 @@
-model_checkpoint_path: "D:\\Allen\\Pupil_Tracking_Project\\DLC_projects\\General_model\\Projects\\GM-Parsa-2024-11-17\\dlc-models\\iteration-0\\GMNov17-trainset95shuffle1\\train\\snapshot-1000000"
-all_model_checkpoint_paths: "D:\\Allen\\Pupil_Tracking_Project\\DLC_projects\\General_model\\Projects\\GM-Parsa-2024-11-17\\dlc-models\\iteration-0\\GMNov17-trainset95shuffle1\\train\\snapshot-945000"
-all_model_checkpoint_paths: "D:\\Allen\\Pupil_Tracking_Project\\DLC_projects\\General_model\\Projects\\GM-Parsa-2024-11-17\\dlc-models\\iteration-0\\GMNov17-trainset95shuffle1\\train\\snapshot-960000"
-all_model_checkpoint_paths: "D:\\Allen\\Pupil_Tracking_Project\\DLC_projects\\General_model\\Projects\\GM-Parsa-2024-11-17\\dlc-models\\iteration-0\\GMNov17-trainset95shuffle1\\train\\snapshot-975000"
-all_model_checkpoint_paths: "D:\\Allen\\Pupil_Tracking_Project\\DLC_projects\\General_model\\Projects\\GM-Parsa-2024-11-17\\dlc-models\\iteration-0\\GMNov17-trainset95shuffle1\\train\\snapshot-990000"
-all_model_checkpoint_paths: "D:\\Allen\\Pupil_Tracking_Project\\DLC_projects\\General_model\\Projects\\GM-Parsa-2024-11-17\\dlc-models\\iteration-0\\GMNov17-trainset95shuffle1\\train\\snapshot-1000000"
